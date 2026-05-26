@@ -107,7 +107,7 @@ st.markdown(
 def book_card(book: dict) -> None:
     status_class = "pill-available" if book["available"] else "pill-claimed"
     status = "Available" if book["available"] else "Claimed"
-    claim = "<div style='color:var(--primary);font-weight:700;margin-top:.75rem;'>Claim →</div>" if book["available"] else ""
+
     st.markdown(
         f"""
         <div class="book-card">
@@ -121,12 +121,15 @@ def book_card(book: dict) -> None:
           <div style="border-top:1px solid var(--border);padding-top:.8rem;margin-top:1rem;">
             <span class="course">{book['course']}</span>
             <div class="muted" style="font-size:.86rem;margin-top:.45rem;">{book['subject']}</div>
-            {claim}
           </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
+    if book["available"]:
+        if st.button("Claim →", key=f"claim_{book['id']}"):
+            st.session_state.page = "Request"
+            st.rerun()
 
 
 def render_form(src: str, title: str) -> None:
@@ -136,9 +139,20 @@ def render_form(src: str, title: str) -> None:
 
 available_count = sum(book["available"] for book in BOOKS)
 
-tab_browse, tab_donate, tab_request = st.tabs(["Browse Books", "Donate", "Request"])
+if "page" not in st.session_state:
+    st.session_state.page = "Browse Books"
 
-with tab_browse:
+page = st.radio(
+    "Navigation",
+    ["Browse Books", "Donate", "Request"],
+    index=["Browse Books", "Donate", "Request"].index(st.session_state.page),
+    horizontal=True,
+    label_visibility="collapsed",
+)
+
+st.session_state.page = page
+
+if page == "Browse Books":
     st.markdown(
         f"""
         <section class="hero">
@@ -199,12 +213,12 @@ with tab_browse:
         unsafe_allow_html=True,
     )
 
-with tab_donate:
+if page == "Donate":
     st.markdown("<section class='hero'><div class='eyebrow'>Mustang Books</div><h1>Donate your textbooks.</h1></section>", unsafe_allow_html=True)
     st.success("Donations are accepted during Finals Week and the first two weeks of each quarter at scheduled on-campus drop-off locations.")
     render_form(DONATE_FORM_URL, "Donate a Textbook")
 
-with tab_request:
+if page == "Request":
     st.markdown("<section class='hero'><div class='eyebrow'>Mustang Books</div><h1>Request a title.</h1></section>", unsafe_allow_html=True)
     st.success("Submit a request for any title. The team processes requests weekly and will email you when a copy is ready for pickup.")
     render_form(REQUEST_FORM_URL, "Request a Textbook")
