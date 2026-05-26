@@ -107,7 +107,7 @@ st.markdown(
 def book_card(book: dict) -> None:
     status_class = "pill-available" if book["available"] else "pill-claimed"
     status = "Available" if book["available"] else "Claimed"
-
+    claim = "<div style='color:var(--primary);font-weight:700;margin-top:.75rem;'>Claim →</div>" if book["available"] else ""
     st.markdown(
         f"""
         <div class="book-card">
@@ -121,16 +121,12 @@ def book_card(book: dict) -> None:
           <div style="border-top:1px solid var(--border);padding-top:.8rem;margin-top:1rem;">
             <span class="course">{book['course']}</span>
             <div class="muted" style="font-size:.86rem;margin-top:.45rem;">{book['subject']}</div>
+            {claim}
           </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
-
-    if book["available"]:
-        if st.button("Claim →", key=f"claim_{book['id']}"):
-            st.session_state.active_tab = 2
-            st.rerun()
 
 
 def render_form(src: str, title: str) -> None:
@@ -140,21 +136,7 @@ def render_form(src: str, title: str) -> None:
 
 available_count = sum(book["available"] for book in BOOKS)
 
-if "active_tab" not in st.session_state:
-    st.session_state.active_tab = 0
-
-tab_names = ["Browse Books", "Donate", "Request"]
-
-tabs = st.tabs(
-    [
-        f"👉 {name}" if i == st.session_state.active_tab else name
-        for i, name in enumerate(tab_names)
-    ]
-)
-
-tab_browse = tabs[0]
-tab_donate = tabs[1]
-tab_request = tabs[2]
+tab_browse, tab_donate, tab_request = st.tabs(["Browse Books", "Donate", "Request"])
 
 with tab_browse:
     st.markdown(
@@ -179,13 +161,9 @@ with tab_browse:
         ("02", "Inventory managed weekly", "Our team updates availability. Books are stored off-campus between events."),
         ("03", "Claim what you need", "Browse below and submit a request. First come, first served at no cost."),
     ]
-
     for col, (step, heading, body) in zip(cols, steps):
         with col:
-            st.markdown(
-                f"<div class='step-card'><b>{step}</b><h4>{heading}</h4><p class='muted'>{body}</p></div>",
-                unsafe_allow_html=True,
-            )
+            st.markdown(f"<div class='step-card'><b>{step}</b><h4>{heading}</h4><p class='muted'>{body}</p></div>", unsafe_allow_html=True)
 
     st.markdown("### Browse inventory")
     search = st.text_input("Search title, author, course, or subject", placeholder="Search textbooks…")
@@ -194,23 +172,17 @@ with tab_browse:
 
     q = search.lower().strip()
     filtered = []
-
     for book in BOOKS:
         haystack = " ".join(str(book.get(key, "")) for key in ["title", "author", "course", "subject"]).lower()
         if (not q or q in haystack) and (dept == "All" or book["dept"] == dept):
             filtered.append(book)
 
-    st.caption(
-        f"{len(filtered)} {'book' if len(filtered) == 1 else 'books'} found"
-        + (f" in {dept}" if dept != "All" else "")
-    )
+    st.caption(f"{len(filtered)} {'book' if len(filtered) == 1 else 'books'} found" + (f" in {dept}" if dept != "All" else ""))
 
     if filtered:
-        rows = [filtered[i:i + 3] for i in range(0, len(filtered), 3)]
-
+        rows = [filtered[i:i+3] for i in range(0, len(filtered), 3)]
         for row in rows:
             cols = st.columns(3)
-
             for col, book in zip(cols, row):
                 with col:
                     book_card(book)
@@ -228,27 +200,13 @@ with tab_browse:
     )
 
 with tab_donate:
-    st.markdown(
-        "<section class='hero'><div class='eyebrow'>Mustang Books</div><h1>Donate your textbooks.</h1></section>",
-        unsafe_allow_html=True,
-    )
-
-    st.success(
-        "Donations are accepted during Finals Week and the first two weeks of each quarter at scheduled on-campus drop-off locations."
-    )
-
+    st.markdown("<section class='hero'><div class='eyebrow'>Mustang Books</div><h1>Donate your textbooks.</h1></section>", unsafe_allow_html=True)
+    st.success("Donations are accepted during Finals Week and the first two weeks of each quarter at scheduled on-campus drop-off locations.")
     render_form(DONATE_FORM_URL, "Donate a Textbook")
 
 with tab_request:
-    st.markdown(
-        "<section class='hero'><div class='eyebrow'>Mustang Books</div><h1>Request a title.</h1></section>",
-        unsafe_allow_html=True,
-    )
-
-    st.success(
-        "Submit a request for any title. The team processes requests weekly and will email you when a copy is ready for pickup."
-    )
-
+    st.markdown("<section class='hero'><div class='eyebrow'>Mustang Books</div><h1>Request a title.</h1></section>", unsafe_allow_html=True)
+    st.success("Submit a request for any title. The team processes requests weekly and will email you when a copy is ready for pickup.")
     render_form(REQUEST_FORM_URL, "Request a Textbook")
 
 st.markdown(
