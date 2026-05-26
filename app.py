@@ -148,7 +148,7 @@ with tab_browse:
           <div class="metric-wrap">
             <div class="metric"><b>{available_count}</b><span>books available now</span></div>
             <div class="metric"><b>500+</b><span>books circulated</span></div>
-            <div class="metric"><b>$150k+</b><span>estimated savings</span></div>
+            <div class="metric"><b>$50k+</b><span>estimated savings</span></div>
           </div>
         </section>
         """,
