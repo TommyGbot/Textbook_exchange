@@ -107,7 +107,17 @@ st.markdown(
 def book_card(book: dict) -> None:
     status_class = "pill-available" if book["available"] else "pill-claimed"
     status = "Available" if book["available"] else "Claimed"
-    claim = "<div style='color:var(--primary);font-weight:700;margin-top:.75rem;'>Claim →</div>" if book["available"] else ""
+    claim = (
+        f"""
+        <a href="{REQUEST_FORM_URL}" target="_blank" 
+           style="color:var(--primary);font-weight:700;margin-top:.75rem;display:inline-block;text-decoration:none;">
+           Claim →
+        </a>
+        """
+        if book["available"]
+        else ""
+    )
+
     st.markdown(
         f"""
         <div class="book-card">
