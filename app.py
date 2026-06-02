@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit.components.v1 import iframe
 
-st.set_page_config(page_title="Mustang Books", page_icon="📚", layout="wide")
+st.set_page_config(page_title="Mustang Books", page_icon="📚", layout="centered")
 
 DONATE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScrXtPw9QgsmMme4X3-abRSI0fgCc7Ea5Q79m_AMDL51NL8VA/viewform?embedded=true"
 REQUEST_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfp7rLxZz8xps7CC9UkaVRXNxXt30dzSPqdJOMqKI3U-7ezlQ/viewform?embedded=true"
@@ -120,9 +120,56 @@ st.markdown(
     .cta { background:#edf7f2; border:1px solid #cfe8db; border-radius:18px; padding:1.5rem; }
     .footer { border-top:1px solid var(--border); padding-top:1.5rem; margin-top:2.5rem; color:var(--muted); font-size:.9rem; }
     div[data-testid="stTabs"] button { font-size: 1rem; }
+
+    @media (max-width: 768px) {
+        .hero {
+            padding: 2rem 1rem;
+            margin: -1rem -1rem 1.25rem -1rem;
+            border-radius: 0 0 18px 18px;
+        }
+
+        .hero h1 {
+            font-size: 2.25rem;
+            line-height: 1.08;
+        }
+
+        .hero p {
+            font-size: .95rem;
+        }
+
+        .metric-wrap {
+            gap: 1rem;
+        }
+
+        .metric b {
+            font-size: 1.5rem;
+        }
+
+        .book-card,
+        .step-card,
+        .cta {
+            margin-bottom: 1rem;
+        }
+
+        div[data-testid="column"] {
+            width: 100% !important;
+            flex: 1 1 100% !important;
+        }
+
+        iframe {
+            width: 100% !important;
+            min-height: 900px;
+        }
+
+        div[data-testid="stTabs"] button {
+            font-size: .85rem;
+            padding: .5rem .3rem;
+        }
+        }
     </style>
     """,
     unsafe_allow_html=True,
+
 )
 
 
