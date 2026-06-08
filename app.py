@@ -73,6 +73,17 @@ BOOKS = [
         "condition": "Great",
         "available": True,
     },
+    {
+        "id": "7",
+        "title": "Probability and Statistics for Engineers",
+        "author": "Miller & Freund",
+        "course": "IME 503",
+        "dept": "IME",
+        "edition": "8th",
+        "subject": "Statistics",
+        "condition": "Good",
+        "available": True,
+    },
 ]
 
 st.markdown(
